@@ -22,13 +22,14 @@ Authors: Cody Bennett
 import json
 import logging
 import os
-import re
+
 import sqlite3
 
 import pandas as pd
 import streamlit as st
-from nltk import pos_tag
+from nltk import pos_tag,download
 from nltk.corpus import stopwords, wordnet
+from nltk.data import find
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 from sklearn.cluster import KMeans
@@ -51,7 +52,23 @@ with st.sidebar:
 cwd = os.getcwd()
 lemmatizer = WordNetLemmatizer()
 stop_words = set(stopwords.words("english"))
+def ensure_nltk_packages():
+    """Ensure required NLTK packages are downloaded."""
+    packages = [
+        "stopwords",
+        "punkt",
+        "punkt_tab",
+        "averaged_perceptron_tagger",
+        "wordnet",
+    ]
+    for package in packages:
+        try:
+            find(f"corpora/{package}")  # Check if the package is already downloaded
+        except LookupError:
+            download(package, quiet=True)  # Download the package if not found
 
+# Ensure NLTK packages are available
+ensure_nltk_packages()
 logging.getLogger().setLevel(logging.INFO)
 logging.basicConfig(
     filename="output.log",
