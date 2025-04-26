@@ -34,6 +34,7 @@ def ensure_nltk_packages():
     packages = [
         "stopwords",
         "punkt",
+        "punkt_tab",
         "averaged_perceptron_tagger",
         "wordnet",
     ]
