@@ -52,23 +52,9 @@ with st.sidebar:
 cwd = os.getcwd()
 lemmatizer = WordNetLemmatizer()
 stop_words = set(stopwords.words("english"))
-def ensure_nltk_packages():
-    """Ensure required NLTK packages are downloaded."""
-    packages = [
-        "stopwords",
-        "punkt",
-        "punkt_tab",
-        "averaged_perceptron_tagger",
-        "wordnet",
-    ]
-    for package in packages:
-        try:
-            find(f"corpora/{package}")  # Check if the package is already downloaded
-        except LookupError:
-            download(package, quiet=True)  # Download the package if not found
+
 
 # Ensure NLTK packages are available
-ensure_nltk_packages()
 logging.getLogger().setLevel(logging.INFO)
 logging.basicConfig(
     filename="output.log",
@@ -105,11 +91,9 @@ def load_tfidf_and_corpus(database="analysis.db"):
 def preprocess_text(text):
     tokens = word_tokenize(text)
     tokens = [word.lower() for word in tokens if word.isalpha()]
-    pos_tags = pos_tag(tokens)
-    tokens = [
-        lemmatizer.lemmatize(word, get_wordnet_pos(pos)) for word, pos in pos_tags
-    ]
+    tokens = [lemmatizer.lemmatize(word) for word in tokens]  # Default noun lemmatization
     return " ".join(word for word in tokens if word not in stop_words and len(word) > 1)
+
 
 
 def get_wordnet_pos(treebank_tag):
